@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Manages grid-based movement system for Pac-Man style gameplay.
-/// Handles position snapping, movement validation, and grid visualization.
+/// Manages the grid system for the game.
+/// Handles grid-to-world position conversion and collision detection.
 /// </summary>
 public class GridManager : MonoBehaviour
 {
@@ -11,128 +11,118 @@ public class GridManager : MonoBehaviour
     [Header("Grid Settings")]
     [SerializeField] private float gridSize = 1f;
     [SerializeField] private Vector2 gridOrigin = Vector2.zero;
-    
-    [Header("Grid Boundaries")]
     [SerializeField] private int gridWidth = 20;
     [SerializeField] private int gridHeight = 20;
-    
+
     [Header("Collision Detection")]
-    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask wallLayerMask;
     [SerializeField] private float wallCheckRadius = 0.4f;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        
+        Debug.Log($"GridManager initialized. Wall layer mask value: {wallLayerMask.value}");
+    }
+
+    /// <summary>
+    /// Converts grid coordinates to world position.
+    /// </summary>
+    public Vector2 GridToWorldPosition(Vector2 gridPosition)
+    {
+        return gridOrigin + gridPosition * gridSize;
+    }
+
+    /// <summary>
+    /// Converts world position to grid coordinates.
+    /// </summary>
+    public Vector2 WorldToGridPosition(Vector2 worldPosition)
+    {
+        return (worldPosition - gridOrigin) / gridSize;
+    }
+
+    /// <summary>
+    /// Rounds a world position to the nearest grid cell center.
+    /// </summary>
+    public Vector2 SnapToGrid(Vector2 worldPosition)
+    {
+        Vector2 gridPos = WorldToGridPosition(worldPosition);
+        gridPos.x = Mathf.Round(gridPos.x);
+        gridPos.y = Mathf.Round(gridPos.y);
+        return GridToWorldPosition(gridPos);
+    }
+
+    /// <summary>
+    /// Checks if a grid position is walkable (no wall collision).
+    /// </summary>
+    public bool IsWalkable(Vector2 gridPosition)
+    {
+        Vector2 worldPosition = GridToWorldPosition(gridPosition);
+        
+        Debug.Log($"Checking position: Grid={gridPosition}, World={worldPosition}, Layer={wallLayerMask.value}");
+        
+        Collider2D hitCollider = Physics2D.OverlapCircle(worldPosition, wallCheckRadius, wallLayerMask);
+        
+        if (hitCollider != null)
+        {
+            Debug.Log($"WALL DETECTED at {worldPosition}! Collider: {hitCollider.gameObject.name}");
         }
         else
         {
-            Destroy(gameObject);
+            Debug.Log($"No wall at {worldPosition} - movement allowed");
         }
-    }
-
-    public Vector2 SnapToGrid(Vector2 position)
-    {
-        float snappedX = Mathf.Round((position.x - gridOrigin.x) / gridSize) * gridSize + gridOrigin.x;
-        float snappedY = Mathf.Round((position.y - gridOrigin.y) / gridSize) * gridSize + gridOrigin.y;
         
-        return new Vector2(snappedX, snappedY);
-    }
-
-    public bool IsWalkable(Vector2 gridPosition)
-    {
-        Collider2D hitCollider = Physics2D.OverlapCircle(gridPosition, wallCheckRadius, wallLayer);
         return hitCollider == null;
     }
 
+    /// <summary>
+    /// Checks if a grid position is within the grid bounds.
+    /// </summary>
+    public bool IsWithinGridBounds(Vector2 gridPosition)
+    {
+        return gridPosition.x >= 0 && gridPosition.x < gridWidth &&
+               gridPosition.y >= 0 && gridPosition.y < gridHeight;
+    }
+
+    /// <summary>
+    /// Calculates the next grid position based on current position and movement direction.
+    /// </summary>
     public Vector2 GetNextGridPosition(Vector2 currentPosition, Vector2 direction)
     {
-        Vector2 snappedCurrent = SnapToGrid(currentPosition);
-        Vector2 nextPosition = snappedCurrent + (direction * gridSize);
+        Vector2 currentGridPos = WorldToGridPosition(currentPosition);
+        Vector2 nextGridPos = currentGridPos + direction;
         
-        return nextPosition;
+        nextGridPos.x = Mathf.Round(nextGridPos.x);
+        nextGridPos.y = Mathf.Round(nextGridPos.y);
+        
+        return nextGridPos;
     }
 
-    public bool IsWithinGridBounds(Vector2 position)
-    {
-        float minX = gridOrigin.x - (gridWidth / 2f) * gridSize;
-        float maxX = gridOrigin.x + (gridWidth / 2f) * gridSize;
-        float minY = gridOrigin.y - (gridHeight / 2f) * gridSize;
-        float maxY = gridOrigin.y + (gridHeight / 2f) * gridSize;
-        
-        return position.x >= minX && position.x <= maxX && position.y >= minY && position.y <= maxY;
-    }
-
-    public float GetGridDistance(Vector2 positionA, Vector2 positionB)
-    {
-        Vector2 snappedA = SnapToGrid(positionA);
-        Vector2 snappedB = SnapToGrid(positionB);
-        
-        return Vector2.Distance(snappedA, snappedB) / gridSize;
-    }
-
-    public Vector2[] GetValidAdjacentPositions(Vector2 position)
-    {
-        Vector2 snappedPosition = SnapToGrid(position);
-        Vector2[] directions = new Vector2[]
-        {
-            Vector2.up,
-            Vector2.down,
-            Vector2.left,
-            Vector2.right
-        };
-        
-        int validCount = 0;
-        Vector2[] adjacentPositions = new Vector2[4];
-        
-        foreach (Vector2 direction in directions)
-        {
-            Vector2 adjacentPos = snappedPosition + (direction * gridSize);
-            
-            if (IsWalkable(adjacentPos) && IsWithinGridBounds(adjacentPos))
-            {
-                adjacentPositions[validCount] = adjacentPos;
-                validCount++;
-            }
-        }
-        
-        Vector2[] validPositions = new Vector2[validCount];
-        for (int i = 0; i < validCount; i++)
-        {
-            validPositions[i] = adjacentPositions[i];
-        }
-        
-        return validPositions;
-    }
-
+    /// <summary>
+    /// Visualizes the grid in the Scene view for debugging.
+    /// </summary>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        
-        float halfWidth = (gridWidth / 2f) * gridSize;
-        float halfHeight = (gridHeight / 2f) * gridSize;
-        
+
         for (int x = 0; x <= gridWidth; x++)
         {
-            float xPos = gridOrigin.x - halfWidth + (x * gridSize);
-            Vector2 startPos = new Vector2(xPos, gridOrigin.y - halfHeight);
-            Vector2 endPos = new Vector2(xPos, gridOrigin.y + halfHeight);
-            Gizmos.DrawLine(startPos, endPos);
+            Vector2 start = GridToWorldPosition(new Vector2(x, 0));
+            Vector2 end = GridToWorldPosition(new Vector2(x, gridHeight));
+            Gizmos.DrawLine(start, end);
         }
-        
+
         for (int y = 0; y <= gridHeight; y++)
         {
-            float yPos = gridOrigin.y - halfHeight + (y * gridSize);
-            Vector2 startPos = new Vector2(gridOrigin.x - halfWidth, yPos);
-            Vector2 endPos = new Vector2(gridOrigin.x + halfWidth, yPos);
-            Gizmos.DrawLine(startPos, endPos);
+            Vector2 start = GridToWorldPosition(new Vector2(0, y));
+            Vector2 end = GridToWorldPosition(new Vector2(gridWidth, y));
+            Gizmos.DrawLine(start, end);
         }
-        
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(gridOrigin, 0.2f);
     }
-
-    public float GetGridSize() => gridSize;
-    public Vector2 GetGridOrigin() => gridOrigin;
 }
