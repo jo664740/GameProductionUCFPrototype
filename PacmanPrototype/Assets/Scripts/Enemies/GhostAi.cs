@@ -5,8 +5,9 @@ using UnityEngine;
 /// Ghosts alternate between chasing the player and wandering randomly
 /// on a timer. Each ghost can have a different start delay so they
 /// don't all chase at the same time, keeping them spread across the maze.
-/// When a power-up is active, ghosts enter a frightened state
+/// When a power up is active, ghosts enter a frightened state
 /// where they move randomly and can be defeated by the player.
+/// Wraps position to the opposite side of the grid when moving past the edge.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
@@ -38,11 +39,14 @@ public class GhostAI : MonoBehaviour
     private bool isFrightened = false;
     private bool isDead = false;
 
-    // Chase/wander cycle
+    // Chase and wander cycle
     private bool isChasing = false;
     private float behaviorTimer = 0f;
     private bool hasStarted = false;
     private float startTimer = 0f;
+
+    // Reusable array to avoid allocating every frame
+    private readonly Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
 
     private void Awake()
     {
@@ -61,7 +65,6 @@ public class GhostAI : MonoBehaviour
         targetPosition = GridManager.Instance.SnapToGrid(transform.position);
         transform.position = targetPosition;
 
-        // Auto-find the player if not assigned in the Inspector
         if (playerTransform == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -99,7 +102,7 @@ public class GhostAI : MonoBehaviour
             ExitFrightenedState();
         }
 
-        // Only cycle chase/wander when not frightened
+        // Only cycle chase and wander when not frightened
         if (!isFrightened)
         {
             UpdateBehaviorTimer();
@@ -136,7 +139,7 @@ public class GhostAI : MonoBehaviour
     }
 
     /// <summary>
-    /// Moves the ghost tile-by-tile toward a target direction.
+    /// Moves the ghost tile by tile toward a target direction.
     /// Picks a new direction each time it reaches a tile center.
     /// </summary>
     private void HandleMovement()
@@ -148,6 +151,15 @@ public class GhostAI : MonoBehaviour
 
         if (isMoving)
         {
+            // Teleport instantly when wrapping to the opposite side
+            float distanceToTarget = Vector2.Distance(rb.position, targetPosition);
+            if (distanceToTarget > GridManager.Instance.GetGridWidth() / 2f)
+            {
+                rb.MovePosition(targetPosition);
+                isMoving = false;
+                return;
+            }
+
             float speed = isFrightened ? frightenedSpeed : moveSpeed;
             Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, speed * Time.fixedDeltaTime);
             rb.MovePosition(newPosition);
@@ -162,16 +174,13 @@ public class GhostAI : MonoBehaviour
 
     /// <summary>
     /// Picks the best direction at the current tile.
-    /// Chase mode: picks the direction closest to the player.
-    /// Wander/Frightened mode: picks a random valid direction.
-    /// Ghosts avoid reversing unless it's the only option.
+    /// Chase mode picks the direction closest to the player.
+    /// Wander and frightened modes pick a random valid direction.
+    /// Ghosts avoid reversing unless it is the only option.
     /// </summary>
     private void ChooseDirection()
     {
-        Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
         Vector2 reverseDirection = -currentDirection;
-
-        // Wander and frightened both use random movement
         bool useRandomMovement = isFrightened || !isChasing;
 
         if (useRandomMovement)
@@ -184,7 +193,6 @@ public class GhostAI : MonoBehaviour
 
         foreach (Vector2 direction in directions)
         {
-            // Don't reverse unless there's no other choice
             if (direction == reverseDirection && currentDirection != Vector2.zero)
             {
                 continue;
@@ -192,19 +200,23 @@ public class GhostAI : MonoBehaviour
 
             Vector2 nextGridPos = GridManager.Instance.GetNextGridPosition(targetPosition, direction);
 
-            if (!GridManager.Instance.IsWalkable(nextGridPos) || !GridManager.Instance.IsWithinGridBounds(nextGridPos))
+            // Wrap to opposite side if moving past grid edge
+            if (!GridManager.Instance.IsWithinGridBounds(nextGridPos))
+            {
+                nextGridPos = GridManager.Instance.WrapGridPosition(nextGridPos);
+            }
+
+            if (!GridManager.Instance.IsWalkable(nextGridPos))
             {
                 continue;
             }
 
             if (useRandomMovement)
             {
-                // Random — take the first valid shuffled direction
                 bestDirection = direction;
                 break;
             }
 
-            // Chase — pick whichever direction gets closest to the player
             if (playerTransform != null)
             {
                 Vector2 nextWorldPos = GridManager.Instance.GridToWorldPosition(nextGridPos);
@@ -223,12 +235,17 @@ public class GhostAI : MonoBehaviour
             }
         }
 
-        // Last resort — allow reversing if stuck
+        // Allow reversing as a last resort if no forward direction is valid
         if (bestDirection == Vector2.zero && currentDirection != Vector2.zero)
         {
             Vector2 reverseGridPos = GridManager.Instance.GetNextGridPosition(targetPosition, reverseDirection);
 
-            if (GridManager.Instance.IsWalkable(reverseGridPos) && GridManager.Instance.IsWithinGridBounds(reverseGridPos))
+            if (!GridManager.Instance.IsWithinGridBounds(reverseGridPos))
+            {
+                reverseGridPos = GridManager.Instance.WrapGridPosition(reverseGridPos);
+            }
+
+            if (GridManager.Instance.IsWalkable(reverseGridPos))
             {
                 bestDirection = reverseDirection;
             }
@@ -237,27 +254,35 @@ public class GhostAI : MonoBehaviour
         if (bestDirection != Vector2.zero)
         {
             currentDirection = bestDirection;
-            targetPosition = GridManager.Instance.GetNextGridPosition(targetPosition, currentDirection);
+            Vector2 nextPos = GridManager.Instance.GetNextGridPosition(targetPosition, currentDirection);
+
+            // Apply wrapping to the actual target position
+            if (!GridManager.Instance.IsWithinGridBounds(nextPos))
+            {
+                nextPos = GridManager.Instance.WrapGridPosition(nextPos);
+            }
+
+            targetPosition = nextPos;
             isMoving = true;
         }
     }
 
     /// <summary>
-    /// Fisher-Yates shuffle for randomizing direction order.
+    /// Shuffles the direction array in place for random movement.
     /// </summary>
-    private void ShuffleDirections(Vector2[] directions)
+    private void ShuffleDirections(Vector2[] array)
     {
-        for (int i = directions.Length - 1; i > 0; i--)
+        for (int i = array.Length - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            Vector2 temp = directions[i];
-            directions[i] = directions[j];
-            directions[j] = temp;
+            Vector2 temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
         }
     }
 
     /// <summary>
-    /// Enters frightened state — reverses direction and moves randomly.
+    /// Enters frightened state, reversing direction and moving randomly.
     /// </summary>
     private void EnterFrightenedState()
     {
@@ -267,7 +292,7 @@ public class GhostAI : MonoBehaviour
     }
 
     /// <summary>
-    /// Exits frightened state — resumes chase/wander cycle.
+    /// Exits frightened state, resuming the chase and wander cycle.
     /// </summary>
     private void ExitFrightenedState()
     {
@@ -317,7 +342,7 @@ public class GhostAI : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles ghost death — awards points and schedules respawn.
+    /// Handles ghost death, awards points, and schedules respawn.
     /// </summary>
     private void Die()
     {
@@ -351,7 +376,7 @@ public class GhostAI : MonoBehaviour
 
     /// <summary>
     /// Draws a colored wireframe sphere in Scene view for debugging.
-    /// Red = chasing, Yellow = wandering, Blue = frightened.
+    /// Red means chasing, yellow means wandering, blue means frightened.
     /// </summary>
     private void OnDrawGizmos()
     {

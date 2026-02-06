@@ -1,8 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// Handles player movement on a grid-based system with Pac-Man style controls.
-/// Supports Tron-style trail mechanics during power-up mode.
+/// Handles player movement on a grid based system with Pac Man style controls.
+/// Supports Tron style trail mechanics during power up mode.
+/// Wraps position to the opposite side of the grid when moving past the edge.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
@@ -92,7 +93,13 @@ public class PlayerController : MonoBehaviour
             {
                 Vector2 nextPosition = GridManager.Instance.GetNextGridPosition(targetPosition, inputDirection);
 
-                if (GridManager.Instance.IsWalkable(nextPosition) && GridManager.Instance.IsWithinGridBounds(nextPosition))
+                // Wrap to opposite side if moving past grid edge
+                if (!GridManager.Instance.IsWithinGridBounds(nextPosition))
+                {
+                    nextPosition = GridManager.Instance.WrapGridPosition(nextPosition);
+                }
+
+                if (GridManager.Instance.IsWalkable(nextPosition))
                 {
                     currentDirection = inputDirection;
                     targetPosition = nextPosition;
@@ -103,6 +110,15 @@ public class PlayerController : MonoBehaviour
 
         if (isMoving)
         {
+            // Check if we need to teleport (target is on the opposite side of the grid)
+            float distanceToTarget = Vector2.Distance(rb.position, targetPosition);
+            if (distanceToTarget > GridManager.Instance.GetGridWidth() / 2f)
+            {
+                rb.MovePosition(targetPosition);
+                isMoving = false;
+                return;
+            }
+
             Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, moveSpeed * Time.fixedDeltaTime);
             rb.MovePosition(newPosition);
 
