@@ -3,6 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Central manager for game state, score tracking, and win/loss conditions.
 /// Implements singleton pattern for global access.
+/// Triggers UI screens on game over and victory.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
@@ -11,14 +12,18 @@ public class GameManager : MonoBehaviour
     [Header("Game State")]
     [SerializeField] private int playerLives = 3;
     [SerializeField] private int currentScore = 0;
-    
+
     [Header("Level Requirements")]
     [SerializeField] private int totalCollectibles = 0;
     [SerializeField] private int totalGhosts = 0;
-    
-    [Header("Power-Up Settings")]
+
+    [Header("Power Up Settings")]
     [SerializeField] private bool isPowerUpActive = false;
     [SerializeField] private float powerUpTimeRemaining = 0f;
+
+    [Header("UI References")]
+    [SerializeField] private GameOverScreen gameOverScreen;
+    [SerializeField] private VictoryScreen victoryScreen;
 
     private int collectiblesRemaining;
     private int ghostsRemaining;
@@ -26,7 +31,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton setup
         if (Instance == null)
         {
             Instance = this;
@@ -58,10 +62,10 @@ public class GameManager : MonoBehaviour
     {
         collectiblesRemaining = GameObject.FindGameObjectsWithTag("Collectible").Length;
         ghostsRemaining = GameObject.FindGameObjectsWithTag("Ghost").Length;
-        
+
         totalCollectibles = collectiblesRemaining;
         totalGhosts = ghostsRemaining;
-        
+
         Debug.Log($"Level initialized: {collectiblesRemaining} collectibles, {ghostsRemaining} ghosts");
     }
 
@@ -72,30 +76,31 @@ public class GameManager : MonoBehaviour
     {
         currentScore += points;
         collectiblesRemaining--;
-        
+
         Debug.Log($"Collected item! Score: {currentScore}, Remaining: {collectiblesRemaining}");
-        
+
         CheckWinCondition();
     }
 
     /// <summary>
-    /// Activates power-up mode for specified duration.
+    /// Activates power up mode for specified duration.
     /// </summary>
+    /// <param name="duration">How long the power up lasts in seconds.</param>
     public void ActivatePowerUp(float duration)
     {
         isPowerUpActive = true;
         powerUpTimeRemaining = duration;
-        
-        Debug.Log($"Power-up activated for {duration} seconds");
+
+        Debug.Log($"Power up activated for {duration} seconds");
     }
 
     /// <summary>
-    /// Counts down power-up timer and deactivates when expired.
+    /// Counts down power up timer and deactivates when expired.
     /// </summary>
     private void UpdatePowerUpTimer()
     {
         powerUpTimeRemaining -= Time.deltaTime;
-        
+
         if (powerUpTimeRemaining <= 0f)
         {
             DeactivatePowerUp();
@@ -103,26 +108,26 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Ends power-up mode and returns ghosts to normal behavior.
+    /// Ends power up mode and returns ghosts to normal behavior.
     /// </summary>
     private void DeactivatePowerUp()
     {
         isPowerUpActive = false;
         powerUpTimeRemaining = 0f;
-        
-        Debug.Log("Power-up deactivated");
+
+        Debug.Log("Power up deactivated");
     }
 
     /// <summary>
-    /// Called when a ghost is defeated during power-up mode.
+    /// Called when a ghost is defeated during power up mode.
     /// </summary>
     public void GhostDefeated(int points)
     {
         currentScore += points;
         ghostsRemaining--;
-        
+
         Debug.Log($"Ghost defeated! Score: {currentScore}, Ghosts remaining: {ghostsRemaining}");
-        
+
         CheckWinCondition();
     }
 
@@ -131,11 +136,14 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void LoseLife()
     {
-        if (isGameOver) return;
-        
+        if (isGameOver)
+        {
+            return;
+        }
+
         playerLives--;
         Debug.Log($"Life lost! Lives remaining: {playerLives}");
-        
+
         if (playerLives <= 0)
         {
             GameOver();
@@ -171,28 +179,36 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles level completion logic.
+    /// Handles level completion and shows the victory screen.
     /// </summary>
     private void WinLevel()
     {
         isGameOver = true;
         Debug.Log("Level Complete! You Win!");
-        // TODO: Load next level or victory screen
+
+        if (victoryScreen != null)
+        {
+            victoryScreen.Show(currentScore);
+        }
     }
 
     /// <summary>
-    /// Handles game over logic when player runs out of lives.
+    /// Handles game over and shows the game over screen.
     /// </summary>
     private void GameOver()
     {
         isGameOver = true;
         Debug.Log("Game Over!");
-        // TODO: Load game over screen
+
+        if (gameOverScreen != null)
+        {
+            gameOverScreen.Show(currentScore);
+        }
     }
 
-    // Public getters for UI and other systems
     public int GetCurrentScore() => currentScore;
     public int GetPlayerLives() => playerLives;
     public bool IsPowerUpActive() => isPowerUpActive;
     public float GetPowerUpTimeRemaining() => powerUpTimeRemaining;
+    public bool IsGameOver() => isGameOver;
 }
