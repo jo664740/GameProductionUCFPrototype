@@ -4,8 +4,8 @@ using TMPro;
 
 /// <summary>
 /// Controls the victory screen panel.
-/// Displays the final score when the player completes the level.
-/// Hidden by default and shown when all collectibles and ghosts are cleared.
+/// Displays the final score when the player completes the last level.
+/// Hidden by default and only shown after all levels are beaten.
 /// </summary>
 public class VictoryScreen : MonoBehaviour
 {
@@ -41,16 +41,25 @@ public class VictoryScreen : MonoBehaviour
     }
 
     /// <summary>
-    /// Restarts the current scene. Hooked up to the play again button in the Inspector.
+    /// Restarts from level 1 with fresh lives.
+    /// Hooked up to the play again button in the Inspector.
     /// </summary>
     public void OnPlayAgainButton()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetLives();
+        }
+
+        // Load the first game scene (build index 1, after MainMenu at index 0)
+        SceneManager.LoadScene(1);
     }
 
     /// <summary>
-    /// Loads the main menu scene. Hooked up to the menu button in the Inspector.
+    /// Loads the main menu scene.
+    /// Hooked up to the menu button in the Inspector.
     /// </summary>
     public void OnMenuButton()
     {

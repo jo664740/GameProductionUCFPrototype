@@ -4,7 +4,7 @@ using TMPro;
 
 /// <summary>
 /// Controls the game over screen panel.
-/// Displays the final score and provides a retry button.
+/// Displays the final score and provides retry and menu buttons.
 /// Hidden by default and shown when the player loses all lives.
 /// </summary>
 public class GameOverScreen : MonoBehaviour
@@ -41,16 +41,25 @@ public class GameOverScreen : MonoBehaviour
     }
 
     /// <summary>
-    /// Restarts the current scene. Hooked up to the retry button in the Inspector.
+    /// Restarts from level 1 with fresh lives.
+    /// Hooked up to the retry button in the Inspector.
     /// </summary>
     public void OnRetryButton()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetLives();
+        }
+
+        // Load the first game scene (build index 1, after MainMenu at index 0)
+        SceneManager.LoadScene(1);
     }
 
     /// <summary>
-    /// Loads the main menu scene. Hooked up to the menu button in the Inspector.
+    /// Loads the main menu scene.
+    /// Hooked up to the menu button in the Inspector.
     /// </summary>
     public void OnMenuButton()
     {
