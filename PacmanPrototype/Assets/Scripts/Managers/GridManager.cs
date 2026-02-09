@@ -2,7 +2,9 @@ using UnityEngine;
 
 /// <summary>
 /// Manages the grid system for the game.
-/// Handles grid-to-world position conversion and collision detection.
+/// Handles grid to world position conversion, collision detection,
+/// and position wrapping for tunnel teleportation.
+/// Supports ghost gate walls that block the player but not ghosts.
 /// </summary>
 public class GridManager : MonoBehaviour
 {
@@ -16,6 +18,7 @@ public class GridManager : MonoBehaviour
 
     [Header("Collision Detection")]
     [SerializeField] private LayerMask wallLayerMask;
+    [SerializeField] private LayerMask ghostWallLayerMask;
     [SerializeField] private float wallCheckRadius = 0.4f;
 
     private void Awake()
@@ -27,7 +30,7 @@ public class GridManager : MonoBehaviour
         }
 
         Instance = this;
-        
+
         Debug.Log($"GridManager initialized. Wall layer mask value: {wallLayerMask.value}");
     }
 
@@ -59,25 +62,37 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if a grid position is walkable (no wall collision).
+    /// Checks if a grid position is walkable for the player.
+    /// Blocks on both walls and ghost gates.
     /// </summary>
     public bool IsWalkable(Vector2 gridPosition)
     {
         Vector2 worldPosition = GridToWorldPosition(gridPosition);
-        
+
         Debug.Log($"Checking position: Grid={gridPosition}, World={worldPosition}, Layer={wallLayerMask.value}");
-        
+
         Collider2D hitCollider = Physics2D.OverlapCircle(worldPosition, wallCheckRadius, wallLayerMask);
-        
+
         if (hitCollider != null)
         {
             Debug.Log($"WALL DETECTED at {worldPosition}! Collider: {hitCollider.gameObject.name}");
         }
         else
         {
-            Debug.Log($"No wall at {worldPosition} - movement allowed");
+            Debug.Log($"No wall at {worldPosition}, movement allowed");
         }
-        
+
+        return hitCollider == null;
+    }
+
+    /// <summary>
+    /// Checks if a grid position is walkable for ghosts.
+    /// Only blocks on walls, ghosts can pass through ghost gates.
+    /// </summary>
+    public bool IsGhostWalkable(Vector2 gridPosition)
+    {
+        Vector2 worldPosition = GridToWorldPosition(gridPosition);
+        Collider2D hitCollider = Physics2D.OverlapCircle(worldPosition, wallCheckRadius, ghostWallLayerMask);
         return hitCollider == null;
     }
 
@@ -91,18 +106,51 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Wraps a grid position to the opposite side of the grid.
+    /// Used for tunnel teleportation when moving past the grid edge.
+    /// </summary>
+    public Vector2 WrapGridPosition(Vector2 gridPosition)
+    {
+        float wrappedX = gridPosition.x;
+        float wrappedY = gridPosition.y;
+
+        if (wrappedX < 0)
+        {
+            wrappedX = gridWidth - 1;
+        }
+        else if (wrappedX >= gridWidth)
+        {
+            wrappedX = 0;
+        }
+
+        if (wrappedY < 0)
+        {
+            wrappedY = gridHeight - 1;
+        }
+        else if (wrappedY >= gridHeight)
+        {
+            wrappedY = 0;
+        }
+
+        return new Vector2(wrappedX, wrappedY);
+    }
+
+    /// <summary>
     /// Calculates the next grid position based on current position and movement direction.
     /// </summary>
     public Vector2 GetNextGridPosition(Vector2 currentPosition, Vector2 direction)
     {
         Vector2 currentGridPos = WorldToGridPosition(currentPosition);
         Vector2 nextGridPos = currentGridPos + direction;
-        
+
         nextGridPos.x = Mathf.Round(nextGridPos.x);
         nextGridPos.y = Mathf.Round(nextGridPos.y);
-        
+
         return nextGridPos;
     }
+
+    public int GetGridWidth() => gridWidth;
+    public int GetGridHeight() => gridHeight;
 
     /// <summary>
     /// Visualizes the grid in the Scene view for debugging.
