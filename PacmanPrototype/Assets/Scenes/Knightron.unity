@@ -875,7 +875,7 @@ MonoBehaviour:
     m_Bits: 64
   ghostWallLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   wallCheckRadius: 0.2
 --- !u!4 &772646822
 Transform:
