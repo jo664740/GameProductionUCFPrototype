@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Central manager for game state, score tracking, and win/loss conditions.
-/// Implements singleton pattern for global access.
-/// Triggers UI screens on game over and victory.
+/// Implements singleton pattern with DontDestroyOnLoad so player lives
+/// persist between levels. Score resets each level.
+/// Automatically loads the next level when the current one is completed.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
@@ -21,6 +23,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isPowerUpActive = false;
     [SerializeField] private float powerUpTimeRemaining = 0f;
 
+    [Header("Level Progression")]
+    [SerializeField] private float nextLevelDelay = 2f;
+
     [Header("UI References")]
     [SerializeField] private GameOverScreen gameOverScreen;
     [SerializeField] private VictoryScreen victoryScreen;
@@ -34,6 +39,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -42,8 +48,40 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    /// <summary>
+    /// Called every time a new scene finishes loading.
+    /// Resets score and reinitializes the level.
+    /// </summary>
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Cancel any pending invokes from the previous level
+        CancelInvoke();
+
+        // Skip reinitialization for the main menu scene
+        if (scene.name == "MainMenu")
+        {
+            return;
+        }
+
+        currentScore = 0;
+        isGameOver = false;
+        isPowerUpActive = false;
+        powerUpTimeRemaining = 0f;
+
+        // Find UI references in the new scene
+        gameOverScreen = FindFirstObjectByType<GameOverScreen>();
+        victoryScreen = FindFirstObjectByType<VictoryScreen>();
+
         InitializeLevel();
     }
 
@@ -155,15 +193,19 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets player position to starting point.
+    /// Finds the player and calls its Respawn method to reset position
+    /// back to where it started with brief invincibility.
     /// </summary>
     private void RespawnPlayer()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            player.transform.position = Vector2.zero;
-            Debug.Log("Player respawned at origin");
+            PlayerController controller = player.GetComponent<PlayerController>();
+            if (controller != null)
+            {
+                controller.Respawn();
+            }
         }
     }
 
@@ -172,6 +214,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void CheckWinCondition()
     {
+        if (isGameOver)
+        {
+            return;
+        }
+
         if (collectiblesRemaining <= 0 && ghostsRemaining <= 0)
         {
             WinLevel();
@@ -179,17 +226,40 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles level completion and shows the victory screen.
+    /// Handles level completion. If there is a next level in the build settings,
+    /// loads it after a delay. If this is the last level, shows the victory screen.
     /// </summary>
     private void WinLevel()
     {
         isGameOver = true;
-        Debug.Log("Level Complete! You Win!");
+        Debug.Log("Level Complete!");
 
-        if (victoryScreen != null)
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        // Check if there is another level after this one
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
-            victoryScreen.Show(currentScore);
+            Debug.Log($"Loading next level in {nextLevelDelay} seconds");
+            Invoke(nameof(LoadNextLevel), nextLevelDelay);
         }
+        else
+        {
+            Debug.Log("Final level complete! You Win!");
+            if (victoryScreen != null)
+            {
+                victoryScreen.Show(currentScore);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Loads the next scene in the build order.
+    /// </summary>
+    private void LoadNextLevel()
+    {
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
     /// <summary>
@@ -204,6 +274,15 @@ public class GameManager : MonoBehaviour
         {
             gameOverScreen.Show(currentScore);
         }
+    }
+
+    /// <summary>
+    /// Resets lives back to full. Called when returning to main menu
+    /// or starting a new game so the player gets a fresh start.
+    /// </summary>
+    public void ResetLives()
+    {
+        playerLives = 3;
     }
 
     public int GetCurrentScore() => currentScore;

@@ -8,6 +8,7 @@ using UnityEngine;
 /// When a power up is active, ghosts enter a frightened state
 /// where they move randomly and can be defeated by the player.
 /// Wraps position to the opposite side of the grid when moving past the edge.
+/// Uses ghost specific walkability checks to pass through ghost gates.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
@@ -177,6 +178,7 @@ public class GhostAI : MonoBehaviour
     /// Chase mode picks the direction closest to the player.
     /// Wander and frightened modes pick a random valid direction.
     /// Ghosts avoid reversing unless it is the only option.
+    /// Uses IsGhostWalkable so ghosts can pass through ghost gates.
     /// </summary>
     private void ChooseDirection()
     {
@@ -206,7 +208,7 @@ public class GhostAI : MonoBehaviour
                 nextGridPos = GridManager.Instance.WrapGridPosition(nextGridPos);
             }
 
-            if (!GridManager.Instance.IsWalkable(nextGridPos))
+            if (!GridManager.Instance.IsGhostWalkable(nextGridPos))
             {
                 continue;
             }
@@ -245,7 +247,7 @@ public class GhostAI : MonoBehaviour
                 reverseGridPos = GridManager.Instance.WrapGridPosition(reverseGridPos);
             }
 
-            if (GridManager.Instance.IsWalkable(reverseGridPos))
+            if (GridManager.Instance.IsGhostWalkable(reverseGridPos))
             {
                 bestDirection = reverseDirection;
             }

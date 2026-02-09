@@ -4,6 +4,7 @@ using UnityEngine;
 /// Manages the grid system for the game.
 /// Handles grid to world position conversion, collision detection,
 /// and position wrapping for tunnel teleportation.
+/// Supports ghost gate walls that block the player but not ghosts.
 /// </summary>
 public class GridManager : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class GridManager : MonoBehaviour
 
     [Header("Collision Detection")]
     [SerializeField] private LayerMask wallLayerMask;
+    [SerializeField] private LayerMask ghostWallLayerMask;
     [SerializeField] private float wallCheckRadius = 0.4f;
 
     private void Awake()
@@ -60,7 +62,8 @@ public class GridManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if a grid position is walkable (no wall collision).
+    /// Checks if a grid position is walkable for the player.
+    /// Blocks on both walls and ghost gates.
     /// </summary>
     public bool IsWalkable(Vector2 gridPosition)
     {
@@ -79,6 +82,17 @@ public class GridManager : MonoBehaviour
             Debug.Log($"No wall at {worldPosition}, movement allowed");
         }
 
+        return hitCollider == null;
+    }
+
+    /// <summary>
+    /// Checks if a grid position is walkable for ghosts.
+    /// Only blocks on walls, ghosts can pass through ghost gates.
+    /// </summary>
+    public bool IsGhostWalkable(Vector2 gridPosition)
+    {
+        Vector2 worldPosition = GridToWorldPosition(gridPosition);
+        Collider2D hitCollider = Physics2D.OverlapCircle(worldPosition, wallCheckRadius, ghostWallLayerMask);
         return hitCollider == null;
     }
 
