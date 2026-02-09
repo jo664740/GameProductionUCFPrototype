@@ -820,6 +820,9 @@ MonoBehaviour:
   wallLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  ghostWallLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
   wallCheckRadius: 0.2
 --- !u!4 &772646822
 Transform:
@@ -1466,6 +1469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 5
   rotationSpeed: 10
+  invincibilityDuration: 2
   trailRenderer: {fileID: 978314097}
   trailKillRadius: 0.5
   ghostLayer:
@@ -1581,7 +1585,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 5134326058302391446, guid: 944b54b61c276fa408e5af6adb6c231e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
