@@ -30,6 +30,7 @@ AnimatorController:
   m_PrefabAsset: {fileID: 0}
   m_Name: Knightro Sprite Sheet_0
   serializedVersion: 5
+<<<<<<< Updated upstream
   m_AnimatorParameters: []
   m_AnimatorLayers:
   - serializedVersion: 5
@@ -70,3 +71,13 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+=======
+  m_AnimatorParameters:
+  - m_Name: Start
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 9100000}
+  m_AnimatorLayers: []
+>>>>>>> Stashed changes
