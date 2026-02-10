@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 325b92f32fed2c041a67bd49e3e21e58
+guid: 3e160d3757f22d045b4114dce0236901
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4287576010021037850
-    second: Union_0
+      213: 8868729072188591806
+    second: duck_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Union_0
+      name: duck_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 320
-        height: 320
+        x: 50
+        y: 64
+        width: 223
+        height: 189
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a176ac02aa7808b30800000000000000
-      internalID: 4287576010021037850
+      spriteID: ebe0bf44a1e041b70800000000000000
+      internalID: 8868729072188591806
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Union_0: 4287576010021037850
+      duck_0: 8868729072188591806
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
