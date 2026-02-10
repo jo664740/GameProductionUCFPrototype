@@ -1,22 +1,22 @@
 fileFormatVersion: 2
-guid: 3d88a6f6af546674fb2187432aacf067
+guid: e175a922d78d9f34cbb9d4da733e6c02
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4184754247344403332
-    second: kNIGHTROSPRITE SHEET 2_0
+      213: -4893247305180972721
+    second: kNIGHTROSPRITE SHEET 5_0
   - first:
-      213: -4335677550558980676
-    second: kNIGHTROSPRITE SHEET 2_1
+      213: 3053592994010355229
+    second: kNIGHTROSPRITE SHEET 5_1
   - first:
-      213: 5284573918436686014
-    second: kNIGHTROSPRITE SHEET 2_2
+      213: -7383022398285749480
+    second: kNIGHTROSPRITE SHEET 5_2
   - first:
-      213: -7401653814274152204
-    second: kNIGHTROSPRITE SHEET 2_3
+      213: -3078007674257465097
+    second: kNIGHTROSPRITE SHEET 5_3
   - first:
-      213: 1060260117667902738
-    second: kNIGHTROSPRITE SHEET 2_4
+      213: 6622669303325974720
+    second: kNIGHTROSPRITE SHEET 5_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -87,33 +87,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -135,33 +109,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: tvOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -177,7 +125,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kNIGHTROSPRITE SHEET 2_0
+      name: kNIGHTROSPRITE SHEET 5_0
       rect:
         serializedVersion: 2
         x: 22
@@ -192,14 +140,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4833541f0db331a30800000000000000
-      internalID: 4184754247344403332
+      spriteID: f49fc806081b71cb0800000000000000
+      internalID: -4893247305180972721
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kNIGHTROSPRITE SHEET 2_1
+      name: kNIGHTROSPRITE SHEET 5_1
       rect:
         serializedVersion: 2
         x: 349
@@ -214,14 +162,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cb5db4a3d3494d3c0800000000000000
-      internalID: -4335677550558980676
+      spriteID: d16db9046aa806a20800000000000000
+      internalID: 3053592994010355229
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kNIGHTROSPRITE SHEET 2_2
+      name: kNIGHTROSPRITE SHEET 5_2
       rect:
         serializedVersion: 2
         x: 674
@@ -236,14 +184,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eb876bddaf3965940800000000000000
-      internalID: 5284573918436686014
+      spriteID: 813ec65ee3c3a8990800000000000000
+      internalID: -7383022398285749480
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kNIGHTROSPRITE SHEET 2_3
+      name: kNIGHTROSPRITE SHEET 5_3
       rect:
         serializedVersion: 2
         x: 1000
@@ -258,14 +206,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4f826c1521b084990800000000000000
-      internalID: -7401653814274152204
+      spriteID: 7f025f70458b845d0800000000000000
+      internalID: -3078007674257465097
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: kNIGHTROSPRITE SHEET 2_4
+      name: kNIGHTROSPRITE SHEET 5_4
       rect:
         serializedVersion: 2
         x: 1326
@@ -280,8 +228,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 215fb13a5fcc6be00800000000000000
-      internalID: 1060260117667902738
+      spriteID: 0c0e0a994a278eb50800000000000000
+      internalID: 6622669303325974720
       vertices: []
       indices: 
       edges: []
@@ -300,11 +248,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kNIGHTROSPRITE SHEET 2_0: 4184754247344403332
-      kNIGHTROSPRITE SHEET 2_1: -4335677550558980676
-      kNIGHTROSPRITE SHEET 2_2: 5284573918436686014
-      kNIGHTROSPRITE SHEET 2_3: -7401653814274152204
-      kNIGHTROSPRITE SHEET 2_4: 1060260117667902738
+      kNIGHTROSPRITE SHEET 5_0: -4893247305180972721
+      kNIGHTROSPRITE SHEET 5_1: 3053592994010355229
+      kNIGHTROSPRITE SHEET 5_2: -7383022398285749480
+      kNIGHTROSPRITE SHEET 5_3: -3078007674257465097
+      kNIGHTROSPRITE SHEET 5_4: 6622669303325974720
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
