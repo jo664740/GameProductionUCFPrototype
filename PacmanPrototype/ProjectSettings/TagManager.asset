@@ -7,6 +7,7 @@ TagManager:
   - Collectible
   - PowerUp
   - Ghost
+  - UI
   layers:
   - Default
   - TransparentFX

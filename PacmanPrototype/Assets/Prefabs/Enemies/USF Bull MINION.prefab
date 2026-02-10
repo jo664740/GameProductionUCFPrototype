@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3007535563602710259}
   - component: {fileID: 7829569252619458020}
   m_Layer: 7
-  m_Name: Ghost
+  m_Name: USF Bull MINION
   m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82,8 +82,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.1995647, g: 1, b: 0, a: 1}
+  m_Sprite: {fileID: 7068080425093852610, guid: 4f25fe26c47ef3a42a8e7eb146cbc15c, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -168,5 +168,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d5d1f08a36c324f8d8161f7dcdec35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GhostAI
+  moveSpeed: 4
+  frightenedSpeed: 2
+  chaseDuration: 10
+  wanderDuration: 5
+  startDelay: 0
   pointsWhenDefeated: 200
   respawnDelay: 3
+  playerTransform: {fileID: 0}

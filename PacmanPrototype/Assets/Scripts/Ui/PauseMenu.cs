@@ -3,8 +3,9 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// Controls the pause menu panel.
-/// Toggles pause on and off with the Escape key.
+/// Toggles pause on and off with the Tab key.
 /// Freezes game time while paused.
+/// Escape key quits the game
 /// </summary>
 public class PauseMenu : MonoBehaviour
 {
@@ -24,6 +25,12 @@ public class PauseMenu : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            Debug.Log("Escape pressed, quitting game.");
+            Application.Quit();
+        }
+
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
             if (GameManager.Instance.IsGameOver())
             {
