@@ -984,7 +984,7 @@ GameObject:
   - component: {fileID: 768840359}
   - component: {fileID: 768840358}
   m_Layer: 0
-  m_Name: Battle Theme
+  m_Name: Music
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1221,6 +1221,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: USF Bull MINION (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 68482135362947d4e8570d0201952203, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
     - target: {fileID: 7829569252619458020, guid: 68482135362947d4e8570d0201952203, type: 3}
       propertyPath: respawnDelay
       value: 4
@@ -1718,7 +1722,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.5
+  m_Time: 2.05
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -1809,6 +1813,7 @@ MonoBehaviour:
   ghostLayer:
     serializedVersion: 2
     m_Bits: 128
+  deathSound: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
 --- !u!58 &978314099
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2501,6 +2506,10 @@ PrefabInstance:
       value: USF Bull MINION
       objectReference: {fileID: 0}
     - target: {fileID: 7829569252619458020, guid: 68482135362947d4e8570d0201952203, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
+    - target: {fileID: 7829569252619458020, guid: 68482135362947d4e8570d0201952203, type: 3}
       propertyPath: startDelay
       value: 1
       objectReference: {fileID: 0}
@@ -2943,6 +2952,10 @@ PrefabInstance:
       value: USF Bull BOSS
       objectReference: {fileID: 0}
     - target: {fileID: 7829569252619458020, guid: 3085235184e81ef4aa2f967c8575fb6f, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
+    - target: {fileID: 7829569252619458020, guid: 3085235184e81ef4aa2f967c8575fb6f, type: 3}
       propertyPath: chaseDuration
       value: 12
       objectReference: {fileID: 0}
@@ -3075,6 +3088,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: USF Bull MINION (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 68482135362947d4e8570d0201952203, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
     - target: {fileID: 7829569252619458020, guid: 68482135362947d4e8570d0201952203, type: 3}
       propertyPath: respawnDelay
       value: 3

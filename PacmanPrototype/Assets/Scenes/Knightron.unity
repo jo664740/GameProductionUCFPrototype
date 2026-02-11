@@ -321,6 +321,10 @@ PrefabInstance:
       value: UF Gator MINION (1)
       objectReference: {fileID: 0}
     - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d97c368d567051349917ac90dc0c31f8, type: 3}
+    - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
       propertyPath: startDelay
       value: 3
       objectReference: {fileID: 0}
@@ -1193,6 +1197,10 @@ PrefabInstance:
       value: UF Gator MINION
       objectReference: {fileID: 0}
     - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
+    - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
       propertyPath: startDelay
       value: 2
       objectReference: {fileID: 0}
@@ -1710,10 +1718,11 @@ MonoBehaviour:
   rotationSpeed: 10
   invincibilityDuration: 2
   trailRenderer: {fileID: 978314097}
-  trailKillRadius: 2
+  trailKillRadius: 0.65
   ghostLayer:
     serializedVersion: 2
     m_Bits: 128
+  deathSound: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
 --- !u!58 &978314099
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2322,7 +2331,7 @@ GameObject:
   - component: {fileID: 1269719658}
   - component: {fileID: 1269719657}
   m_Layer: 0
-  m_Name: Battle Theme
+  m_Name: Music
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2341,7 +2350,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 8cb4494599677fe4aa0367c5bf6dabad, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.176
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4885,6 +4894,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UF Gator BOSS
       objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 753f12eb2198c4643977978a55932f2a, type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c78c235f9c8525f4d88fc6d7743a8f58, type: 3}
     - target: {fileID: 7829569252619458020, guid: 753f12eb2198c4643977978a55932f2a, type: 3}
       propertyPath: respawnDelay
       value: 4

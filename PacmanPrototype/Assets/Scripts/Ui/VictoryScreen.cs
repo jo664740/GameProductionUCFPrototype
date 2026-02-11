@@ -26,7 +26,7 @@ public class VictoryScreen : MonoBehaviour
 
     /// <summary>
     /// Shows the victory screen with the player's final score.
-    /// Plays a victory sound effect.
+    /// Stops the game audio and plays the win sound effect.
      /// </summary>
      /// <param name="score">The final score to display.</param>
     /// </summary>
@@ -42,6 +42,11 @@ public class VictoryScreen : MonoBehaviour
         {
             finalScoreText.text = "Final Score: " + score;
         }
+        AudioSource music = FindObjectOfType<AudioSource>();
+        if (music != null)
+        {    
+            music.Stop();
+        }    
         if (winSound != null)
         {
             AudioSource.PlayClipAtPoint(winSound, Camera.main.transform.position);

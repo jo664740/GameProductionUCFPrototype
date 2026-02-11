@@ -30,6 +30,8 @@ public class GhostAI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform playerTransform;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip deathSound;
     private Rigidbody2D rb;
     private CircleCollider2D circleCollider;
     private Vector2 startPosition;
@@ -318,6 +320,7 @@ public class GhostAI : MonoBehaviour
         }
         else
         {
+            AudioSource.PlayClipAtPoint(deathSound, Camera.main.transform.position);
             GameManager.Instance.LoseLife();
         }
     }

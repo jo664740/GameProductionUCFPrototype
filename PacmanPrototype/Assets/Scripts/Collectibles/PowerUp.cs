@@ -37,7 +37,10 @@ public class PowerUp : MonoBehaviour
         GameManager.Instance.ActivatePowerUp(powerUpDuration);
 
         Debug.Log($"Power-up activated! Duration: {powerUpDuration} seconds, Points: {pointValue}");
-
+    if (powerUpSound != null)
+        {
+            AudioSource.PlayClipAtPoint(powerUpSound, Camera.main.transform.position);
+        }
         Destroy(gameObject);
     }
 

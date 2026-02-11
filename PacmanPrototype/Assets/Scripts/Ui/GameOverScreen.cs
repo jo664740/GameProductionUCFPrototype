@@ -26,6 +26,7 @@ public class GameOverScreen : MonoBehaviour
 
     /// <summary>
     /// Shows the game over screen with the player's final score.
+    /// Pauses the game audio and plays the lose sound effect.
     /// </summary>
     /// <param name="score">The final score to display.</param>
     public void Show(int score)
@@ -39,6 +40,12 @@ public class GameOverScreen : MonoBehaviour
         {
             finalScoreText.text = "Final Score: " + score;
         }
+        AudioSource music = FindObjectOfType<AudioSource>();
+        if (music != null)
+        {
+            music.Stop();
+        }
+        
         if (loseSound != null)
         {
             AudioSource.PlayClipAtPoint(loseSound, Camera.main.transform.position);

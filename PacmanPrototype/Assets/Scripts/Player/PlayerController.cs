@@ -22,7 +22,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float trailKillRadius = 0.5f;
     [SerializeField] private LayerMask ghostLayer;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip deathSound;
+
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private Vector2 currentDirection = Vector2.zero;
     private Vector2 inputDirection = Vector2.zero;
     private Vector2 targetPosition;
@@ -36,6 +40,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (trailRenderer != null)
         {
@@ -127,10 +132,14 @@ public class PlayerController : MonoBehaviour
 
         if (isMoving)
         {
-            // Check if we need to teleport (target is on the opposite side of the grid)
+            // Check if we need to teleport 
             float distanceToTarget = Vector2.Distance(rb.position, targetPosition);
             if (distanceToTarget > GridManager.Instance.GetGridWidth() / 2f)
             {
+                if (trailRenderer != null)
+                {
+                    trailRenderer.Clear();
+                }
                 rb.MovePosition(targetPosition);
                 isMoving = false;
                 return;
@@ -147,9 +156,23 @@ public class PlayerController : MonoBehaviour
 
             if (currentDirection != Vector2.zero)
             {
-                float angle = Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg - 90f;
-                Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+                if (currentDirection == Vector2.left)
+                {
+                    spriteRenderer.flipX = true;
+                    transform.rotation = Quaternion.identity;
+                }
+                else if (currentDirection == Vector2.right)
+                {
+                    spriteRenderer.flipX = false;
+                    transform.rotation = Quaternion.identity;
+                }
+                else
+                {
+                    spriteRenderer.flipX = false;
+                    float angle = Mathf.Atan2(currentDirection.y, currentDirection.x) * Mathf.Rad2Deg;
+                    Quaternion targetRotation = Quaternion.Euler(0f, 0f, angle);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+                }
             }
         }
     }
@@ -167,6 +190,9 @@ public class PlayerController : MonoBehaviour
         inputDirection = Vector2.zero;
         isMoving = false;
 
+        spriteRenderer.flipX = false;
+        transform.rotation = Quaternion.identity;
+
         isInvincible = true;
         invincibilityTimer = invincibilityDuration;
 
@@ -181,16 +207,30 @@ public class PlayerController : MonoBehaviour
         return isInvincible;
     }
 
+    /// <summary>
+    /// Checks for ghost collisions along the entire tron trail when power up is active.
+    /// </summary>
     private void CheckTronTrailCollisions()
     {
-        Collider2D[] hitGhosts = Physics2D.OverlapCircleAll(transform.position, trailKillRadius, ghostLayer);
-
-        foreach (Collider2D ghostCollider in hitGhosts)
+        if (trailRenderer == null || trailRenderer.positionCount < 2)
         {
-            GhostAI ghost = ghostCollider.GetComponent<GhostAI>();
-            if (ghost != null && ghost.CanBeKilledByTrail())
+            return;
+        }
+
+        Vector3[] positions = new Vector3[trailRenderer.positionCount];
+        trailRenderer.GetPositions(positions);
+
+        foreach (Vector3 point in positions)
+        {
+            Collider2D[] hitGhosts = Physics2D.OverlapCircleAll(point, trailKillRadius, ghostLayer);
+
+            foreach (Collider2D ghostCollider in hitGhosts)
             {
-                ghost.DieFromTrail();
+                GhostAI ghost = ghostCollider.GetComponent<GhostAI>();
+                if (ghost != null && ghost.CanBeKilledByTrail())
+                {
+                    ghost.DieFromTrail();
+                }
             }
         }
     }
@@ -219,6 +259,11 @@ public class PlayerController : MonoBehaviour
             if (isInvincible)
             {
                 return;
+            }
+
+            if (deathSound != null)
+            {
+                AudioSource.PlayClipAtPoint(deathSound, transform.position);
             }
 
             GhostAI ghost = collision.GetComponent<GhostAI>();
