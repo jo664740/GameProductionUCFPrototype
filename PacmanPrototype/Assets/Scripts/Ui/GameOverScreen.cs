@@ -6,9 +6,12 @@ using TMPro;
 /// Controls the game over screen panel.
 /// Displays the final score and provides retry and menu buttons.
 /// Hidden by default and shown when the player loses all lives.
+/// Plays a game over sound effect when shown.
 /// </summary>
 public class GameOverScreen : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] private AudioClip loseSound;
     [Header("UI References")]
     [SerializeField] private GameObject panel;
     [SerializeField] private TextMeshProUGUI finalScoreText;
@@ -36,7 +39,10 @@ public class GameOverScreen : MonoBehaviour
         {
             finalScoreText.text = "Final Score: " + score;
         }
-
+        if (loseSound != null)
+        {
+            AudioSource.PlayClipAtPoint(loseSound, Camera.main.transform.position);
+        }
         Time.timeScale = 0f;
     }
 

@@ -1,8 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// Handles collectible item behavior (pellets/dots).
+/// Handles collectible item behavior.
 /// Awards points and notifies GameManager when collected.
+/// Plays pickup sound effect when collected.
 /// </summary>
 [RequireComponent(typeof(CircleCollider2D))]
 public class Collectible : MonoBehaviour
@@ -10,7 +11,7 @@ public class Collectible : MonoBehaviour
     [Header("Collectible Settings")]
     [SerializeField] private int pointValue = 10;
     [SerializeField] private bool playCollectionSound = true;
-
+    [SerializeField] private AudioClip collectionSound;
     private CircleCollider2D circleCollider;
     private bool hasBeenCollected = false;
 
@@ -34,9 +35,9 @@ public class Collectible : MonoBehaviour
 
         GameManager.Instance.CollectItem(pointValue);
 
-        if (playCollectionSound)
+        if (playCollectionSound && collectionSound != null)
         {
-            // TODO: Play collection sound effect
+            AudioSource.PlayClipAtPoint(collectionSound, transform.position);
             Debug.Log($"Collected pellet worth {pointValue} points");
         }
 

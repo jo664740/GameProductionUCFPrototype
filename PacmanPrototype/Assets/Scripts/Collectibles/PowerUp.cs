@@ -1,8 +1,9 @@
 using UnityEngine;
 
 /// <summary>
-/// Handles power-up item behavior (rubber ducks in your UCF theme).
+/// Handles power-up item behavior.
 /// Awards points, activates power-up mode, and enables Tron trail.
+/// Plays power up sound effect when collected.
 /// </summary>
 [RequireComponent(typeof(CircleCollider2D))]
 public class PowerUp : MonoBehaviour
@@ -10,8 +11,7 @@ public class PowerUp : MonoBehaviour
     [Header("Power-Up Settings")]
     [SerializeField] private float powerUpDuration = 10f;
     [SerializeField] private int pointValue = 50;
-    [SerializeField] private bool enableTronTrail = true;
-
+    [SerializeField] private AudioClip powerUpSound;
     private CircleCollider2D circleCollider;
     private bool hasBeenActivated = false;
 

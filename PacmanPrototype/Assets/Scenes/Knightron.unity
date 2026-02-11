@@ -320,6 +320,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UF Gator MINION (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
+      propertyPath: startDelay
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1100,7 +1104,7 @@ MonoBehaviour:
   gridHeight: 20
   wallLayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
   ghostWallLayerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -1183,6 +1187,18 @@ PrefabInstance:
     - target: {fileID: 6835798114693456254, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
       propertyPath: m_Name
       value: UF Gator MINION
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
+      propertyPath: startDelay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
+      propertyPath: chaseDuration
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 68e4a684a1c34794ba4472b12c9429ce, type: 3}
+      propertyPath: wanderDuration
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3993,6 +4009,14 @@ PrefabInstance:
     - target: {fileID: 6835798114693456254, guid: 753f12eb2198c4643977978a55932f2a, type: 3}
       propertyPath: m_Name
       value: UF Gator BOSS
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 753f12eb2198c4643977978a55932f2a, type: 3}
+      propertyPath: respawnDelay
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829569252619458020, guid: 753f12eb2198c4643977978a55932f2a, type: 3}
+      propertyPath: chaseDuration
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

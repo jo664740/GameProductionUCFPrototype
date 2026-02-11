@@ -6,9 +6,12 @@ using TMPro;
 /// Controls the victory screen panel.
 /// Displays the final score when the player completes the last level.
 /// Hidden by default and only shown after all levels are beaten.
+/// Plays a victory sound effect when shown.
 /// </summary>
 public class VictoryScreen : MonoBehaviour
 {
+    [Header("Audio")]
+    [SerializeField] private AudioClip winSound;
     [Header("UI References")]
     [SerializeField] private GameObject panel;
     [SerializeField] private TextMeshProUGUI finalScoreText;
@@ -23,6 +26,9 @@ public class VictoryScreen : MonoBehaviour
 
     /// <summary>
     /// Shows the victory screen with the player's final score.
+    /// Plays a victory sound effect.
+     /// </summary>
+     /// <param name="score">The final score to display.</param>
     /// </summary>
     /// <param name="score">The final score to display.</param>
     public void Show(int score)
@@ -36,7 +42,10 @@ public class VictoryScreen : MonoBehaviour
         {
             finalScoreText.text = "Final Score: " + score;
         }
-
+        if (winSound != null)
+        {
+            AudioSource.PlayClipAtPoint(winSound, Camera.main.transform.position);
+        }
         Time.timeScale = 0f;
     }
 
