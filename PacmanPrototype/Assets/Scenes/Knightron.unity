@@ -1623,7 +1623,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 0.5
+  m_Time: 2.08
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
@@ -1710,7 +1710,7 @@ MonoBehaviour:
   rotationSpeed: 10
   invincibilityDuration: 2
   trailRenderer: {fileID: 978314097}
-  trailKillRadius: 0.5
+  trailKillRadius: 2
   ghostLayer:
     serializedVersion: 2
     m_Bits: 128
